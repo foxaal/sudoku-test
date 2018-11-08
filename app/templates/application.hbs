@@ -1,2 +1,18 @@
-<h1>HOWDY</h1>
-{{outlet}}
+<div class="vert-center-container">
+  <div class="m-top"></div>
+  <div class="app-header-container">
+    <div class="monkey-icon">
+      <img src="./images/funny-monkey-face-144-170094.png" width="100%" height="100%" alt="MONKEY FACE">
+    </div>
+    <div class="app-title">
+      <img src="./images/sudokuMonkey2.png" width="100%" height="100%" alt="Sudoku Monkey">
+    </div>
+    <div id="pseudoFileInput" class="m-open" onclick="$('#actualFileInput').click()">New</div>
+    <div id="solveGame" class="m-solve">Solve</div>
+  </div>
+  <br>
+
+  {{!file-reader id=actualFileInput}}
+  {{outlet}}
+
+</div>

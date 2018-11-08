@@ -1,0 +1,488 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: sans-serif;
+    background-color: #559933;
+    height: 100vh;
+    width: 100vw;
+    color: white;
+}
+p {
+    padding: 1vh;
+    font-size: 4vh;
+}
+.vert-center-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-items: center;
+    align-items: center;
+}
+.horz-center-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    justify-items: center;
+    align-items: center;
+}
+
+.app-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.app-header-container {
+    width: 66vw;
+    height: 18vw;
+    max-width: 66vh;
+    max-height: 18vh;
+    display: grid;
+    grid-template-columns: 16% 4% 12% 20% 20% 28%;
+    grid-template-rows: 20% 50% 30%;
+    grid-template-areas:
+        "m-top m-top m-top m-top m-top m-top"
+	"monkey-icon . app-title app-title app-title app-title"
+	". . . m-open m-solve ."    
+
+}
+.m-top {
+    grid-area: m-top;
+}
+.m-open {
+    grid-area: m-open;
+    font-size: 4vh; 
+    self-align: center;
+    self-justify: center;
+    width: 60%;
+    height: 60%;
+    margin-top: 10%;
+}
+.m-solve {
+    grid-area: m-solve;
+    font-size: 4vh; 
+    self-align: center;
+    self-justify: center;
+    width: 60%;
+    height: 60%;
+    margin-top: 10%;
+}
+.monkey-icon {
+    grid-area: monkey-icon;    
+    height: 100%;
+    width: 100%;
+}
+
+.app-title {
+    font-size: 100%;
+    grid-area: app-title;
+    height: 100%;
+    width: 100%;
+}
+.sudoku-container {
+    width: 96vw;
+    height: 96vw;
+    max-width: 96vh;
+    max-height: 96vh;
+    align-content: start;
+    position: relative;
+    display: grid;
+    grid-template-columns: 12% 1% repeat(3, 8%) 1% repeat(3, 8%) 1% repeat(3, 8%) 1% 12%;
+    grid-template-rows: 1% repeat(3, 8%) 1% repeat(3, 8%) 1% repeat(3, 8%) 1%;
+
+    grid-template-areas:
+	"lf r0 r0 r0 r0 r0 r0 r0 r0 r0 r0 r0 r0 r0 rt"
+	"lf v1 a1 b1 c1 v4 d1 e1 f1 v7 g1 h1 i1 v10 rt"
+	"lf v1 a2 b2 c2 v4 d2 e2 f2 v7 g2 h2 i2 v10 rt"
+	"lf v1 a3 b3 c3 v4 d3 e3 f3 v7 g3 h3 i3 v10 rt"
+	"lf r1 r1 r1 r1 r1 r1 r1 r1 r1 r1 r1 r1 r1 rt"
+	"lf v2 a4 b4 c4 v5 d4 e4 f4 v8 g4 h4 i4 v11 rt"
+	"lf v2 a5 b5 c5 v5 d5 e5 f5 v8 g5 h5 i5 v11 rt"
+	"lf v2 a6 b6 c6 v5 d6 e6 f6 v8 g6 h6 i6 v11 rt"
+	"lf r2 r2 r2 r2 r2 r2 r2 r2 r2 r2 r2 r2 r2 rt"
+	"lf v3 a7 b7 c7 v6 d7 e7 f7 v9 g7 h7 i7 v12 rt"
+	"lf v3 a8 b8 c8 v6 d8 e8 f8 v9 g8 h8 i8 v12 rt"
+	"lf v3 a9 b9 c9 v6 d9 e9 f9 v9 g9 h9 i9 v12 rt"
+	"lf r3 r3 r3 r3 r3 r3 r3 r3 r3 r3 r3 r3 r3 rt";
+}
+
+.lf {
+    grid-area: lf;
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.rt {
+    grid-area: rt;
+    justify-self: center;
+    align-self: center;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+}
+
+.thick-h {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+.thick-v {
+    height: 100%;
+    width: 100%;
+    background-color: white;
+}
+.sq {
+    height: 100%;
+    width: 100%;
+    self-align: center;
+    self-justify: center;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+
+
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#pseudoFileInput {
+    cursor:pointer;
+}
+#solveGame {
+    cursor:pointer;
+}
+
+input[type=file] {
+    display: none;
+}
+
+input {
+    font-size: 4vh; 
+    margin-left: 30%;
+    width: 40%;
+    height: 100%;
+    outline: none;
+    background: transparent;
+    border: none;
+    color: white;
+}
+.input-number {
+    margin-left:30%;
+}
+.r0 {
+    grid-area: r0;
+}
+.r1 {
+    grid-area: r1;
+}
+.r2 {
+    grid-area: r2;
+}
+.r3 {
+    grid-area: r3;
+}
+
+.v1 {
+    grid-area: v1;
+}
+.v2 {
+    grid-area: v2;
+}
+.v3 {
+    grid-area: v3;
+}
+
+.v4 {
+    grid-area: v4;
+}
+.v5 {
+    grid-area: v5;
+}
+.v6 {
+    grid-area: v6;
+}
+
+.v7 {
+    grid-area: v7;
+}
+.v8 {
+    grid-area: v8;
+}
+.v9 {
+    grid-area: v9;
+}
+
+.v10 {
+    grid-area: v10;
+}
+.v11 {
+    grid-area: v11;
+}
+.v12 {
+    grid-area: v12;
+}
+
+.a1 {
+    grid-area: a1;
+}
+.a2 {
+    grid-area: a2;
+}
+.a3 {
+    grid-area: a3;
+}
+.a4 {
+    grid-area: a4;
+}
+.a5 {
+    grid-area: a5;
+}
+.a6 {
+    grid-area: a6;
+}
+.a7 {
+    grid-area: a7;
+}
+.a8 {
+    grid-area: a8;
+}
+.a9 {
+    grid-area: a9;
+}
+
+.b1 {
+    grid-area: b1;
+}
+.b2 {
+    grid-area: b2;
+}
+.b3 {
+    grid-area: b3;
+}
+.b4 {
+    grid-area: b4;
+}
+.b5 {
+    grid-area: b5;
+}
+.b6 {
+    grid-area: b6;
+}
+.b7 {
+    grid-area: b7;
+}
+.b8 {
+    grid-area: b8;
+}
+.b9 {
+    grid-area: b9;
+}
+
+.c1 {
+    grid-area: c1;
+}
+.c2 {
+    grid-area: c2;
+}
+.c3 {
+    grid-area: c3;
+}
+.c4 {
+    grid-area: c4;
+}
+.c5 {
+    grid-area: c5;
+}
+.c6 {
+    grid-area: c6;
+}
+.c7 {
+    grid-area: c7;
+}
+.c8 {
+    grid-area: c8;
+}
+.c9 {
+    grid-area: c9;
+}
+
+.d1 {
+    grid-area: d1;
+}
+.d2 {
+    grid-area: d2;
+}
+.d3 {
+    grid-area: d3;
+}
+.d4 {
+    grid-area: d4;
+}
+.d5 {
+    grid-area: d5;
+}
+.d6 {
+    grid-area: d6;
+}
+.d7 {
+    grid-area: d7;
+}
+.d8 {
+    grid-area: d8;
+}
+.d9 {
+    grid-area: d9;
+}
+
+.e1 {
+    grid-area: e1;
+}
+.e2 {
+    grid-area: e2;
+}
+.e3 {
+    grid-area: e3;
+}
+.e4 {
+    grid-area: e4;
+}
+.e5 {
+    grid-area: e5;
+}
+.e6 {
+    grid-area: e6;
+}
+.e7 {
+    grid-area: e7;
+}
+.e8 {
+    grid-area: e8;
+}
+.e9 {
+    grid-area: e9;
+}
+
+.f1 {
+    grid-area: f1;
+}
+.f2 {
+    grid-area: f2;
+}
+.f3 {
+    grid-area: f3;
+}
+.f4 {
+    grid-area: f4;
+}
+.f5 {
+    grid-area: f5;
+}
+.f6 {
+    grid-area: f6;
+}
+.f7 {
+    grid-area: f7;
+}
+.f8 {
+    grid-area: f8;
+}
+.f9 {
+    grid-area: f9;
+}
+
+.g1 {
+    grid-area: g1;
+}
+.g2 {
+    grid-area: g2;
+}
+.g3 {
+    grid-area: g3;
+}
+.g4 {
+    grid-area: g4;
+}
+.g5 {
+    grid-area: g5;
+}
+.g6 {
+    grid-area: g6;
+}
+.g7 {
+    grid-area: g7;
+}
+.g8 {
+    grid-area: g8;
+}
+.g9 {
+    grid-area: g9;
+}
+
+.h1 {
+    grid-area: h1;
+}
+.h2 {
+    grid-area: h2;
+}
+.h3 {
+    grid-area: h3;
+}
+.h4 {
+    grid-area: h4;
+}
+.h5 {
+    grid-area: h5;
+}
+.h6 {
+    grid-area: h6;
+}
+.h7 {
+    grid-area: h7;
+}
+.h8 {
+    grid-area: h8;
+}
+.h9 {
+    grid-area: h9;
+}
+
+.i1 {
+    grid-area: i1;
+}
+.i2 {
+    grid-area: i2;
+}
+.i3 {
+    grid-area: i3;
+}
+.i4 {
+    grid-area: i4;
+}
+.i5 {
+    grid-area: i5;
+}
+.i6 {
+    grid-area: i6;
+}
+.i7 {
+    grid-area: i7;
+}
+.i8 {
+    grid-area: i8;
+}
+.i9 {
+    grid-area: i9;
+}

@@ -1,12 +1,12 @@
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
-import { later } from '@ember/runloop';
+//import { later } from '@ember/runloop';
 
 export default Route.extend({
   model() {
     let sud = {
       answer: null,
-      curPuzzleName: 'puzzle3',
+      curPuzzleName: 'puzzle5',
       blksPoss: {},
       rowsPoss: {},
       colsPoss: {},
@@ -68,7 +68,8 @@ export default Route.extend({
 	},
       }
     };
-    return new RSVP.Promise((resolve) => {
+
+    return new RSVP.Promise(resolve => {
       let func = () => {
 	// Input any number of strings containing [1-9|X] and find single
 	// occurences.  Like a histogram.
@@ -106,10 +107,10 @@ export default Route.extend({
 
 	let getCol = (idx) => {
 	  if (idx < 0 || idx > 8) {
-	    console.log('getRow: ERROR: idx not within 0-8', idx);
+	    console.log('getCol: ERROR: idx not within 0-8', idx);
 	    return;
 	  }
-	  let ret = null;
+	  let ret = '';
 	  for (let j = 0; j < 9; j++) {
 	    let row = sud.puzzles[sud.curPuzzleName][j+1];
 	    ret = ret + row[idx];
@@ -117,6 +118,7 @@ export default Route.extend({
 	  return ret;
 	};
 
+	// idx 1 based
 	let getRow = (idx) => {
 	  if (idx < 1 || idx > 9) {
 	    console.log('getRow: ERROR: idx not within 1-9', idx);
@@ -134,6 +136,22 @@ export default Route.extend({
 	  }
 	  sud.puzzles[solveName] = sol;
 	  sud.curPuzzleName = solveName;
+	};
+
+	// i is across, j is down
+	let traverseAllCells = (func) => {
+	  let count = 0, curcount = 0;
+	  for (let j = 0; j < 9; j++) {
+	    //let row = sud.puzzles[sud.curPuzzleName][j+1];
+	    for (let i = 0; i < 9; i++) {
+	      curcount = func(i,j);
+	      if (curcount) {
+		count++;
+		break;
+	      }
+	    }
+	  }
+	  return {count, curcount};
 	};
 
 	// i is across, j is down
@@ -169,7 +187,6 @@ export default Route.extend({
 	    -------------------------------------------------------------
 	    row-frmla: Math.floor(i/3)*3+1  str-idx-frmla: i%3*3, i%3*3+3 */
 	let getBlksPoss = () => {
-	  let ret = 'blank';
 	  for (let i = 0; i < 9; i++) {
 	    let r,s1,s2;
 	    s1 = (i%3)*3;
@@ -182,6 +199,22 @@ export default Route.extend({
 	  }
 	};
 
+	// i 0 based
+	let getBlk = (i) => {
+	  if (i < 0 || i > 8) {
+	    console.log('getBlk: ERROR: i not within 0-8', i);
+	    return;
+	  }
+	  let r,s1,s2;
+	  s1 = (i%3)*3;
+	  s2 = s1+3;
+	  r = Math.floor(i/3)*3+1;
+	  let str1 = sud.puzzles[sud.curPuzzleName][r].substring(s1,s2);
+	  let str2 = sud.puzzles[sud.curPuzzleName][r+1].substring(s1,s2);
+	  let str3 = sud.puzzles[sud.curPuzzleName][r+2].substring(s1,s2);
+	  return str1+str2+str3;
+	};
+	
 	let getRowsPoss = () => {
 	  for (let j = 0; j < 9; j++) {
 	    let row = sud.puzzles[sud.curPuzzleName][j+1];
@@ -195,6 +228,7 @@ export default Route.extend({
 	  }
 	};
 
+	// i,j 0 based
 	let setCell = (i,j,chr) => {
 	  let row = getRow(j+1);
 	  //console.log('setCell bef:', row);	  
@@ -203,12 +237,14 @@ export default Route.extend({
 	  //console.log('setCell aft:', getRow(j+1));	  
 	};
 
+	// i,j 0 based
 	let getCell = (i,j) => {
 	  let row = getRow(j+1);
 	  let val = row[i];
 	  return val;
 	};
 
+	// i,j 0 based
 	let setSolvedCell = (i,j) => {
 	  let rowPoss = sud.rowsPoss[j+1];
 	  let colPoss = sud.colsPoss[i+1];
@@ -227,29 +263,103 @@ export default Route.extend({
 	  }
 	  return 0;
 	};
-	/*
+	let setSolvedCell2 = (i,j) => {
+	  let rowPoss = sud.rowsPoss[j+1];
+	  let colPoss = sud.colsPoss[i+1];
+	  let blkIdx = Math.floor(i/3) + (Math.floor(j/3)*3) + 1; 
+	  let blkPoss = sud.blksPoss[blkIdx];
+	  let totalPoss = uniques(rowPoss, colPoss, blkPoss);
+	  if (totalPoss.length === 2) {
+	    console.log('Maybe Solved:'
+			, i+1, j+1, 'blkidx:', blkIdx, 'val:', getCell(i,j)
+			,'\n  rowPoss', rowPoss
+			,'\n  colPoss', colPoss
+			,'\n  blkPoss', blkPoss
+			,'\n  totalPoss', totalPoss);
+	    setCell(i, j, totalPoss[0]);
+	    return 1;
+	  }
+	  return 0;
+	};
+	let setSolvedCell2Rev = (i,j) => {
+	  let rowPoss = sud.rowsPoss[j+1];
+	  let colPoss = sud.colsPoss[i+1];
+	  let blkIdx = Math.floor(i/3) + (Math.floor(j/3)*3) + 1; 
+	  let blkPoss = sud.blksPoss[blkIdx];
+	  let totalPoss = uniques(rowPoss, colPoss, blkPoss);
+	  if (totalPoss.length === 2) {
+	    console.log('Maybe Solved:'
+			, i+1, j+1, 'blkidx:', blkIdx, 'val:', getCell(i,j)
+			,'\n  rowPoss', rowPoss
+			,'\n  colPoss', colPoss
+			,'\n  blkPoss', blkPoss
+			,'\n  totalPoss', totalPoss);
+	    setCell(i, j, totalPoss[1]);
+	    return 1;
+	  }
+	  return 0;
+	};
+
+	// Set curPuzzleName before calling this.
 	let checkSolution = () => {
-	  ret = true;
-	  let sol = sud.puzzles[sud.curPuzzleName];
-	  // check for X
-	  
+	  let ret = 0;
+	  for (let i = 0; i < 9; i++) {
+	    let col = getCol(i);
+	    let row = getRow(i+1);
+	    let blk = getBlk(i)
+	    // check for X -- only need to check rows
+	    if (row.includes('X')) return 1;
+	    // check for uniqueness
+	    let colSet = new Set([...col]);
+	    if (colSet.size !== 9) return 2;
+	    let rowSet = new Set([...row]);
+	    if (rowSet.size !== 9) return 3;
+	    let blkSet = new Set([...blk]);
+	    if (blkSet.size !== 9) return 4;
+	  }
 	  return ret;
 	};
-	*/
-	let loadPossBlkRowCol = () => {
+
+	let brutish2 = () => {
+	  getColsPoss();
+	  getRowsPoss();
+	  getBlksPoss();
+	  let count = traverseEmptyCells(setSolvedCell2Rev);
+	  // Recurse
+	  if (count.count) brutish2();
+	  console.log('loadPoss', sud);
+	  let bad = checkSolution();
+	  sud.answer = 'bad '+bad;
+	  //if (bad) brutish2();
+	};
+	let brutish = () => {
+	  getColsPoss();
+	  getRowsPoss();
+	  getBlksPoss();
+	  let count = traverseEmptyCells(setSolvedCell2);
+	  // Recurse
+	  if (count.count) brutish();
+	  console.log('loadPoss', sud);
+	  let bad = checkSolution();
+	  sud.answer = 'bad '+bad;
+	  if (bad) brutish2();
+	};
+	
+	let calcPossBlkRowCol = () => {
 	  getColsPoss();
 	  getRowsPoss();
 	  getBlksPoss();
 	  let count = traverseEmptyCells(setSolvedCell);
-	  if (count.count) loadPossBlkRowCol();
-	  sud.answer = count.count+'-'+count.xcount+'-'+count.curcount;
+	  // Recurse
+	  if (count.count) calcPossBlkRowCol();
 	  console.log('loadPoss', sud);
-	  //let good = checkSolution();
-	  //if (!good) brutish();
+	  let bad = checkSolution();
+	  sud.answer = 'bad '+bad;
+	  if (bad) brutish();
 	};
 
 	copyPuzzleToSolution(sud.curPuzzleName);
-	loadPossBlkRowCol();
+	calcPossBlkRowCol();
 
 	resolve(sud);
       };
