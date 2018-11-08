@@ -48,14 +48,14 @@ p {
     grid-template-areas:
         "m-top m-top m-top m-top m-top m-top"
 	"monkey-icon . app-title app-title app-title app-title"
-	". . . m-open m-solve ."    
+	". . . m-home m-ugga ."    
 
 }
 .m-top {
     grid-area: m-top;
 }
-.m-open {
-    grid-area: m-open;
+.m-ugga {
+    grid-area: m-ugga;
     font-size: 4vh; 
     self-align: center;
     self-justify: center;
@@ -63,8 +63,8 @@ p {
     height: 60%;
     margin-top: 10%;
 }
-.m-solve {
-    grid-area: m-solve;
+.m-home {
+    grid-area: m-home;
     font-size: 4vh; 
     self-align: center;
     self-justify: center;
